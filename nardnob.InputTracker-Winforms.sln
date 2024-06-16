@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nardnob.InputTracker.WinForms", "InputTracker\nardnob.InputTracker.WinForms.csproj", "{C64C3659-D381-41C0-AB05-3C327779A27A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nardnob.InputTracker.WinForms", "WinForms\nardnob.InputTracker.WinForms.csproj", "{C64C3659-D381-41C0-AB05-3C327779A27A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
