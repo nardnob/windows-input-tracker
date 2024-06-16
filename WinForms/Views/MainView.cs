@@ -72,20 +72,13 @@ namespace nardnob.InputTracker.WinForms.Views
 
             Debug.WriteLine($"{theClickedButton}-clicked point: ({x}, {y})");
 
-            if (_state.ClickedPoints.ContainsKey(x))
+            if (_state.ClickedPoints.ContainsKey(new Point(x, y)))
             {
-                if (_state.ClickedPoints[x].ContainsKey(y))
-                {
-                    _state.ClickedPoints[x][y]++;
-                }
-                else
-                {
-                    _state.ClickedPoints[x].Add(y, 1);
-                }
+                _state.ClickedPoints[new Point(x, y)]++;
             }
             else
             {
-                _state.ClickedPoints.Add(x, new Dictionary<int, int> { { y, 1 } });
+                _state.ClickedPoints.Add(new Point(x, y), 1);
             }
         }
 
