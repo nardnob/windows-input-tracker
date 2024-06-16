@@ -1,4 +1,4 @@
-using nardnob.InputTracker.WindowGrabber;
+using nardnob.InputTracker.WindowsInteraction;
 
 namespace nardnob.InputTracker.WinForms
 {

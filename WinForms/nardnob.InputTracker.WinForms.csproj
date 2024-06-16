@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WindowGrabber\nardnob.InputTracker.WindowGrabber.csproj" />
+    <ProjectReference Include="..\WindowsInteraction\nardnob.InputTracker.WindowsInteraction.csproj" />
   </ItemGroup>
 
 </Project>

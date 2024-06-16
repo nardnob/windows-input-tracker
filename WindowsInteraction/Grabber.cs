@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace nardnob.InputTracker.WindowGrabber
+namespace nardnob.InputTracker.WindowsInteraction
 {
     public static class Grabber
     {
