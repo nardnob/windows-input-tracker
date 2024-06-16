@@ -28,16 +28,24 @@ namespace nardnob.InputTracker.WinForms.Views
 
         private void OnKeyPressed(object sender, KeyboardInterceptorEventArgs e)
         {
-            var keyPressed = e.KeyPressed;
-
-            _state.KeyCount++;
-
-            UpdateFormValues();
-
-            var pressedAlt1 = (Keys)keyPressed == Keys.D1 && Control.ModifierKeys == Keys.Alt;
-            if (pressedAlt1)
+            try
             {
-                ToggleFormVisibility();
+                var keyPressed = e.KeyPressed;
+
+                _state.KeyCount++;
+
+                UpdateFormValues();
+
+                var pressedAlt1 = (Keys)keyPressed == Keys.D1 && Control.ModifierKeys == Keys.Alt;
+                if (pressedAlt1)
+                {
+                    ToggleFormVisibility();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Error in OnKeyPressed.");
+                MessageBox.Show("An error has occurred in OnKeyPressed.");
             }
         }
 
