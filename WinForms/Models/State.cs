@@ -2,7 +2,7 @@
 {
     internal class State
     {
-        public Dictionary<int, Dictionary<int, int>> ClickedPoints = new Dictionary<int, Dictionary<int, int>>();
+        public Dictionary<Point, int> ClickedPoints = [];
 
         public ulong ClickCount { get; set; }
         public ulong KeyCount { get; set; }

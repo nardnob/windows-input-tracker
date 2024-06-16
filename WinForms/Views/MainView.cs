@@ -1,5 +1,6 @@
 using nardnob.InputTracker.WindowsInteraction;
 using nardnob.InputTracker.WinForms.Models;
+using System.Diagnostics;
 
 namespace nardnob.InputTracker.WinForms.Views
 {
@@ -27,18 +28,24 @@ namespace nardnob.InputTracker.WinForms.Views
 
         private void OnKeyPressed(object sender, KeyboardInterceptorEventArgs e)
         {
-            var keyPressed = e.KeyPressed;
-
-            _state.KeyCount++;
-
-            if (!_state.IsHidden)
+            try
             {
+                var keyPressed = e.KeyPressed;
+
+                _state.KeyCount++;
+
                 UpdateFormValues();
-            }
 
-            if ((Keys)keyPressed == Keys.D1 && Control.ModifierKeys == Keys.Alt)
+                var pressedAlt1 = (Keys)keyPressed == Keys.D1 && Control.ModifierKeys == Keys.Alt;
+                if (pressedAlt1)
+                {
+                    ToggleFormVisibility();
+                }
+            }
+            catch (Exception ex)
             {
-                ToggleFormVisibility();
+                Debug.WriteLine("Error in OnKeyPressed.");
+                MessageBox.Show("An error has occurred in OnKeyPressed.");
             }
         }
 
@@ -48,38 +55,38 @@ namespace nardnob.InputTracker.WinForms.Views
             {
                 var mouseMessage = e.MouseMessage;
                 var mousePoint = e.MousePoint;
-                if (mouseMessage == MouseMessages.WM_LBUTTONDOWN || mouseMessage == MouseMessages.WM_RBUTTONDOWN)
+
+                var isMouseClick = mouseMessage == MouseMessages.WM_LBUTTONDOWN || mouseMessage == MouseMessages.WM_RBUTTONDOWN;
+
+                if (isMouseClick)
                 {
                     _state.ClickCount++;
 
-                    if (!_state.IsHidden)
-                    {
-                        UpdateFormValues();
-                    }
-
-                    Console.WriteLine($"Clicked point: ({mousePoint.X}, {mousePoint.Y})");
-
-                    if (_state.ClickedPoints.ContainsKey(mousePoint.X))
-                    {
-                        if (_state.ClickedPoints[mousePoint.X].ContainsKey(mousePoint.Y))
-                        {
-                            _state.ClickedPoints[mousePoint.X][mousePoint.Y]++;
-                        }
-                        else
-                        {
-                            _state.ClickedPoints[mousePoint.X].Add(mousePoint.Y, 1);
-                        }
-                    }
-                    else
-                    {
-                        _state.ClickedPoints.Add(mousePoint.X, new Dictionary<int, int> { { mousePoint.Y, 1 } });
-                    }
+                    UpdateFormValues();
+                    StoreClickedPoint(mousePoint.X, mousePoint.Y, mouseMessage);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in OnMouseClicked.");
+                Debug.WriteLine("Error in OnMouseClicked.");
                 MessageBox.Show("An error has occurred in OnMouseClicked.");
+            }
+        }
+
+        private void StoreClickedPoint(int x, int y, MouseMessages mouseMessage = MouseMessages.WM_LBUTTONDOWN)
+        {
+            var isLeftClick = mouseMessage == MouseMessages.WM_LBUTTONDOWN;
+
+            var theClickedButton = isLeftClick ? "Left" : "Right";
+            Debug.WriteLine($"{theClickedButton}-clicked point: ({x}, {y})");
+
+            if (_state.ClickedPoints.ContainsKey(new Point(x, y)))
+            {
+                _state.ClickedPoints[new Point(x, y)]++;
+            }
+            else
+            {
+                _state.ClickedPoints.Add(new Point(x, y), 1);
             }
         }
 
@@ -93,15 +100,19 @@ namespace nardnob.InputTracker.WinForms.Views
             }
             else
             {
-                UpdateFormValues();
                 this.Show();
             }
+
+            UpdateFormValues();
         }
 
         private void UpdateFormValues()
         {
-            lblKeyCount.Text = _state.KeyCount.ToString("N0");
-            lblClickCount.Text = _state.ClickCount.ToString("N0");
+            if (!_state.IsHidden)
+            {
+                lblKeyCount.Text = _state.KeyCount.ToString("N0");
+                lblClickCount.Text = _state.ClickCount.ToString("N0");
+            }
         }
 
         private void InitializeKeyListener()
@@ -118,10 +129,13 @@ namespace nardnob.InputTracker.WinForms.Views
             _mouseListener.Start();
         }
 
-        private void RepositionForm()
+        private void PositionForm()
         {
             Rectangle workingArea = Screen.GetWorkingArea(this);
-            this.Location = new Point(workingArea.Right - Size.Width, workingArea.Bottom - Size.Height);
+            var xPosition = workingArea.Right - Size.Width;
+            var yPosition = workingArea.Bottom - Size.Height;
+
+            this.Location = new Point(xPosition, yPosition);
         }
 
         #endregion
@@ -130,7 +144,7 @@ namespace nardnob.InputTracker.WinForms.Views
 
         private void MainView_Load(object sender, EventArgs e)
         {
-            RepositionForm();
+            PositionForm();
             InitializeKeyListener();
             InitializeMouseListener();
         }
