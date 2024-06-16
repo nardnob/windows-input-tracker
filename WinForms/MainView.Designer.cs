@@ -59,8 +59,11 @@
             ClientSize = new Size(800, 450);
             Controls.Add(lblKeyCountDescription);
             Controls.Add(lblKeyCount);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
             Name = "MainView";
             Text = "Windows Input Tracker";
+            TopMost = true;
             Load += MainView_Load;
             MouseDown += MainView_MouseDown;
             ResumeLayout(false);
