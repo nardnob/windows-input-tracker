@@ -55,30 +55,37 @@ namespace nardnob.InputTracker.WinForms.Views
                     _state.ClickCount++;
 
                     UpdateFormValues();
-
-                    Debug.WriteLine($"Clicked point: ({mousePoint.X}, {mousePoint.Y})");
-
-                    if (_state.ClickedPoints.ContainsKey(mousePoint.X))
-                    {
-                        if (_state.ClickedPoints[mousePoint.X].ContainsKey(mousePoint.Y))
-                        {
-                            _state.ClickedPoints[mousePoint.X][mousePoint.Y]++;
-                        }
-                        else
-                        {
-                            _state.ClickedPoints[mousePoint.X].Add(mousePoint.Y, 1);
-                        }
-                    }
-                    else
-                    {
-                        _state.ClickedPoints.Add(mousePoint.X, new Dictionary<int, int> { { mousePoint.Y, 1 } });
-                    }
+                    StoreClickedPoint(mousePoint.X, mousePoint.Y, mouseMessage);
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Error in OnMouseClicked.");
                 MessageBox.Show("An error has occurred in OnMouseClicked.");
+            }
+        }
+
+        private void StoreClickedPoint(int x, int y, MouseMessages mouseMessage = MouseMessages.WM_LBUTTONDOWN)
+        {
+            var isLeftClick = mouseMessage == MouseMessages.WM_LBUTTONDOWN;
+            var theClickedButton = isLeftClick ? "Left" : "Right";
+
+            Debug.WriteLine($"{theClickedButton}-clicked point: ({x}, {y})");
+
+            if (_state.ClickedPoints.ContainsKey(x))
+            {
+                if (_state.ClickedPoints[x].ContainsKey(y))
+                {
+                    _state.ClickedPoints[x][y]++;
+                }
+                else
+                {
+                    _state.ClickedPoints[x].Add(y, 1);
+                }
+            }
+            else
+            {
+                _state.ClickedPoints.Add(x, new Dictionary<int, int> { { y, 1 } });
             }
         }
 
