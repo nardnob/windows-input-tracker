@@ -37,7 +37,8 @@ namespace nardnob.InputTracker.WinForms.Views
                 UpdateFormValues();
             }
 
-            if ((Keys)keyPressed == Keys.D1 && Control.ModifierKeys == Keys.Alt)
+            var pressedAlt1 = (Keys)keyPressed == Keys.D1 && Control.ModifierKeys == Keys.Alt;
+            if (pressedAlt1)
             {
                 ToggleFormVisibility();
             }
