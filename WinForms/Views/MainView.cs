@@ -1,7 +1,6 @@
 using nardnob.InputTracker.WindowsInteraction;
-using static System.Windows.Forms.AxHost;
 
-namespace nardnob.InputTracker.WinForms
+namespace nardnob.InputTracker.WinForms.Views
 {
     public partial class MainView : Form
     {

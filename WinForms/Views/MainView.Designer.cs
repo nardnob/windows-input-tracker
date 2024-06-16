@@ -1,4 +1,4 @@
-﻿namespace nardnob.InputTracker.WinForms
+﻿namespace nardnob.InputTracker.WinForms.Views
 {
     partial class MainView
     {
