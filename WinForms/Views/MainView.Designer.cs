@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             lblKeyCount = new Label();
             lblKeyCountDescription = new Label();
             lblToggleVisibilityDescription = new Label();
@@ -97,6 +98,7 @@
             Controls.Add(lblKeyCountDescription);
             Controls.Add(lblKeyCount);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MaximizeBox = false;
             Name = "MainView";
             Text = "Windows Input Tracker";
