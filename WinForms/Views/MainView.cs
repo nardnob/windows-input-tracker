@@ -76,8 +76,8 @@ namespace nardnob.InputTracker.WinForms.Views
         private void StoreClickedPoint(int x, int y, MouseMessages mouseMessage = MouseMessages.WM_LBUTTONDOWN)
         {
             var isLeftClick = mouseMessage == MouseMessages.WM_LBUTTONDOWN;
-            var theClickedButton = isLeftClick ? "Left" : "Right";
 
+            var theClickedButton = isLeftClick ? "Left" : "Right";
             Debug.WriteLine($"{theClickedButton}-clicked point: ({x}, {y})");
 
             if (_state.ClickedPoints.ContainsKey(new Point(x, y)))
