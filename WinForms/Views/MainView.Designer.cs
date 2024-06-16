@@ -57,8 +57,9 @@
             // 
             // lblToggleVisibilityDescription
             // 
+            lblToggleVisibilityDescription.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             lblToggleVisibilityDescription.AutoSize = true;
-            lblToggleVisibilityDescription.Location = new Point(462, 426);
+            lblToggleVisibilityDescription.Location = new Point(28, 65);
             lblToggleVisibilityDescription.Name = "lblToggleVisibilityDescription";
             lblToggleVisibilityDescription.Size = new Size(326, 15);
             lblToggleVisibilityDescription.TabIndex = 2;
@@ -89,7 +90,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(366, 89);
             Controls.Add(lblClickCount);
             Controls.Add(lblClickCountDescription);
             Controls.Add(lblToggleVisibilityDescription);
