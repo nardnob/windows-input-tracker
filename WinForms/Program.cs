@@ -1,4 +1,4 @@
-namespace InputTracker
+namespace nardnob.InputTracker.WinForms
 {
     internal static class Program
     {

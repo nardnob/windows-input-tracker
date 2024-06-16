@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <StartupObject>InputTracker.Program</StartupObject>
+    <StartupObject>nardnob.InputTracker.WinForms.Program</StartupObject>
   </PropertyGroup>
 
 </Project>
