@@ -60,18 +60,18 @@ namespace nardnob.InputTracker.WinForms.Views
                     Console.WriteLine($"Clicked point: ({mousePoint.X}, {mousePoint.Y})");
 
                     if (_state.ClickedPoints.ContainsKey(mousePoint.X))
-                    { 
+                    {
                         if (_state.ClickedPoints[mousePoint.X].ContainsKey(mousePoint.Y))
-                        { 
+                        {
                             _state.ClickedPoints[mousePoint.X][mousePoint.Y]++;
                         }
                         else
-                        { 
+                        {
                             _state.ClickedPoints[mousePoint.X].Add(mousePoint.Y, 1);
                         }
                     }
                     else
-                    { 
+                    {
                         _state.ClickedPoints.Add(mousePoint.X, new Dictionary<int, int> { { mousePoint.Y, 1 } });
                     }
                 }
@@ -118,12 +118,19 @@ namespace nardnob.InputTracker.WinForms.Views
             _mouseListener.Start();
         }
 
+        private void RepositionForm()
+        {
+            Rectangle workingArea = Screen.GetWorkingArea(this);
+            this.Location = new Point(workingArea.Right - Size.Width, workingArea.Bottom - Size.Height);
+        }
+
         #endregion
 
         #region " Event Handlers "
 
         private void MainView_Load(object sender, EventArgs e)
         {
+            RepositionForm();
             InitializeKeyListener();
             InitializeMouseListener();
         }
