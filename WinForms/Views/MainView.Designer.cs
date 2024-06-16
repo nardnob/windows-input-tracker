@@ -31,6 +31,8 @@
             lblKeyCount = new Label();
             lblKeyCountDescription = new Label();
             lblToggleVisibilityDescription = new Label();
+            lblClickCountDescription = new Label();
+            lblClickCount = new Label();
             SuspendLayout();
             // 
             // lblKeyCount
@@ -63,11 +65,33 @@
             lblToggleVisibilityDescription.Text = "(ALT+1) - Hold ALT and press 1 to toggle the form's visibility.";
             lblToggleVisibilityDescription.MouseDown += MainView_MouseDown;
             // 
+            // lblClickCountDescription
+            // 
+            lblClickCountDescription.AutoSize = true;
+            lblClickCountDescription.Location = new Point(12, 33);
+            lblClickCountDescription.Name = "lblClickCountDescription";
+            lblClickCountDescription.Size = new Size(72, 15);
+            lblClickCountDescription.TabIndex = 3;
+            lblClickCountDescription.Text = "Click Count:";
+            lblClickCountDescription.MouseDown += MainView_MouseDown;
+            // 
+            // lblClickCount
+            // 
+            lblClickCount.AutoSize = true;
+            lblClickCount.Location = new Point(90, 33);
+            lblClickCount.Name = "lblClickCount";
+            lblClickCount.Size = new Size(13, 15);
+            lblClickCount.TabIndex = 4;
+            lblClickCount.Text = "0";
+            lblClickCount.MouseDown += MainView_MouseDown;
+            // 
             // MainView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(lblClickCount);
+            Controls.Add(lblClickCountDescription);
             Controls.Add(lblToggleVisibilityDescription);
             Controls.Add(lblKeyCountDescription);
             Controls.Add(lblKeyCount);
@@ -88,5 +112,7 @@
         private Label lblKeyCount;
         private Label lblKeyCountDescription;
         private Label lblToggleVisibilityDescription;
+        private Label lblClickCountDescription;
+        private Label lblClickCount;
     }
 }
