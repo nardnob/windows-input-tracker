@@ -32,10 +32,7 @@ namespace nardnob.InputTracker.WinForms.Views
 
             _state.KeyCount++;
 
-            if (!_state.IsHidden)
-            {
-                UpdateFormValues();
-            }
+            UpdateFormValues();
 
             var pressedAlt1 = (Keys)keyPressed == Keys.D1 && Control.ModifierKeys == Keys.Alt;
             if (pressedAlt1)
@@ -57,10 +54,7 @@ namespace nardnob.InputTracker.WinForms.Views
                 {
                     _state.ClickCount++;
 
-                    if (!_state.IsHidden)
-                    {
-                        UpdateFormValues();
-                    }
+                    UpdateFormValues();
 
                     Debug.WriteLine($"Clicked point: ({mousePoint.X}, {mousePoint.Y})");
 
@@ -98,15 +92,19 @@ namespace nardnob.InputTracker.WinForms.Views
             }
             else
             {
-                UpdateFormValues();
                 this.Show();
             }
+
+            UpdateFormValues();
         }
 
         private void UpdateFormValues()
         {
-            lblKeyCount.Text = _state.KeyCount.ToString("N0");
-            lblClickCount.Text = _state.ClickCount.ToString("N0");
+            if (!_state.IsHidden)
+            {
+                lblKeyCount.Text = _state.KeyCount.ToString("N0");
+                lblClickCount.Text = _state.ClickCount.ToString("N0");
+            }
         }
 
         private void InitializeKeyListener()
