@@ -93,10 +93,7 @@ namespace nardnob.InputTracker.WindowsInteraction
             if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
             {
                 int vkCode = Marshal.ReadInt32(lParam);
-                if (KeyPressed != null)
-                { 
-                    KeyPressed.Invoke(this, new KeyboardInterceptorEventArgs(vkCode));
-                }
+                KeyPressed?.Invoke(this, new KeyboardInterceptorEventArgs(vkCode));
             }
 
             return CallNextHookEx((IntPtr)_hookID, nCode, wParam, lParam);
