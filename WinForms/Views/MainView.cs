@@ -27,7 +27,7 @@ namespace nardnob.InputTracker.WinForms.Views
 
         private void GrabWindow()
         {
-            Grabber.Grab(this.Handle);
+            WindowGrabber.Grab(this.Handle);
         }
 
         private void OnKeyPressed(object sender, KeyboardInterceptorEventArgs e)

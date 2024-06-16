@@ -2,7 +2,7 @@
 
 namespace nardnob.InputTracker.WindowsInteraction
 {
-    public static class Grabber
+    public static class WindowGrabber
     {
         [DllImport("User32.dll")]
         private static extern bool ReleaseCapture();
