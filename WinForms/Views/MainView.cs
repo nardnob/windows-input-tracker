@@ -1,0 +1,151 @@
+using nardnob.InputTracker.WindowsInteraction;
+using nardnob.InputTracker.WinForms.Models;
+
+namespace nardnob.InputTracker.WinForms.Views
+{
+    public partial class MainView : Form
+    {
+        #region " Private Members "
+
+        KeyboardInterceptor? _keyListener;
+        MouseInterceptor? _mouseListener;
+
+        State _state = new();
+
+        #endregion
+
+        #region " Constructors "
+
+        public MainView()
+        {
+            InitializeComponent();
+        }
+
+        #endregion
+
+        #region " Private Methods "
+
+        private void OnKeyPressed(object sender, KeyboardInterceptorEventArgs e)
+        {
+            var keyPressed = e.KeyPressed;
+
+            _state.KeyCount++;
+
+            if (!_state.IsHidden)
+            {
+                UpdateFormValues();
+            }
+
+            if ((Keys)keyPressed == Keys.D1 && Control.ModifierKeys == Keys.Alt)
+            {
+                ToggleFormVisibility();
+            }
+        }
+
+        private void OnMouseClicked(object sender, InterceptMouseEventArgs e)
+        {
+            try
+            {
+                var mouseMessage = e.MouseMessage;
+                var mousePoint = e.MousePoint;
+                if (mouseMessage == MouseMessages.WM_LBUTTONDOWN || mouseMessage == MouseMessages.WM_RBUTTONDOWN)
+                {
+                    _state.ClickCount++;
+
+                    if (!_state.IsHidden)
+                    {
+                        UpdateFormValues();
+                    }
+
+                    Console.WriteLine($"Clicked point: ({mousePoint.X}, {mousePoint.Y})");
+
+                    if (_state.ClickedPoints.ContainsKey(mousePoint.X))
+                    {
+                        if (_state.ClickedPoints[mousePoint.X].ContainsKey(mousePoint.Y))
+                        {
+                            _state.ClickedPoints[mousePoint.X][mousePoint.Y]++;
+                        }
+                        else
+                        {
+                            _state.ClickedPoints[mousePoint.X].Add(mousePoint.Y, 1);
+                        }
+                    }
+                    else
+                    {
+                        _state.ClickedPoints.Add(mousePoint.X, new Dictionary<int, int> { { mousePoint.Y, 1 } });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in OnMouseClicked.");
+                MessageBox.Show("An error has occurred in OnMouseClicked.");
+            }
+        }
+
+        private void ToggleFormVisibility()
+        {
+            _state.IsHidden = !_state.IsHidden;
+
+            if (_state.IsHidden)
+            {
+                this.Hide();
+            }
+            else
+            {
+                UpdateFormValues();
+                this.Show();
+            }
+        }
+
+        private void UpdateFormValues()
+        {
+            lblKeyCount.Text = _state.KeyCount.ToString("N0");
+            lblClickCount.Text = _state.ClickCount.ToString("N0");
+        }
+
+        private void InitializeKeyListener()
+        {
+            _keyListener = new KeyboardInterceptor();
+            _keyListener.KeyPressed += OnKeyPressed;
+            _keyListener.Start();
+        }
+
+        private void InitializeMouseListener()
+        {
+            _mouseListener = new MouseInterceptor();
+            _mouseListener.MouseClicked += OnMouseClicked;
+            _mouseListener.Start();
+        }
+
+        private void RepositionForm()
+        {
+            Rectangle workingArea = Screen.GetWorkingArea(this);
+            this.Location = new Point(workingArea.Right - Size.Width, workingArea.Bottom - Size.Height);
+        }
+
+        #endregion
+
+        #region " Event Handlers "
+
+        private void MainView_Load(object sender, EventArgs e)
+        {
+            RepositionForm();
+            InitializeKeyListener();
+            InitializeMouseListener();
+        }
+
+        private void MainView_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _keyListener?.Stop();
+            _mouseListener?.Stop();
+        }
+
+        private void MainView_MouseDown(object sender, MouseEventArgs e)
+        {
+            WindowGrabber.Grab(this.Handle);
+        }
+
+        #endregion
+    }
+}
