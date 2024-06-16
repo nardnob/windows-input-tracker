@@ -76,6 +76,7 @@
             Name = "MainView";
             Text = "Windows Input Tracker";
             TopMost = true;
+            FormClosing += MainView_FormClosing;
             Load += MainView_Load;
             MouseDown += MainView_MouseDown;
             ResumeLayout(false);

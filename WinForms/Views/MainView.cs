@@ -77,6 +77,11 @@ namespace nardnob.InputTracker.WinForms.Views
             _keyListener.Start();
         }
 
+        private void MainView_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _keyListener?.Stop();
+        }
+
         private void MainView_MouseDown(object sender, MouseEventArgs e)
         {
             GrabWindow();
