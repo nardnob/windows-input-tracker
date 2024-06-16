@@ -1,5 +1,6 @@
 using nardnob.InputTracker.WindowsInteraction;
 using nardnob.InputTracker.WinForms.Models;
+using System.Diagnostics;
 
 namespace nardnob.InputTracker.WinForms.Views
 {
@@ -48,7 +49,10 @@ namespace nardnob.InputTracker.WinForms.Views
             {
                 var mouseMessage = e.MouseMessage;
                 var mousePoint = e.MousePoint;
-                if (mouseMessage == MouseMessages.WM_LBUTTONDOWN || mouseMessage == MouseMessages.WM_RBUTTONDOWN)
+
+                var isMouseClick = mouseMessage == MouseMessages.WM_LBUTTONDOWN || mouseMessage == MouseMessages.WM_RBUTTONDOWN;
+
+                if (isMouseClick)
                 {
                     _state.ClickCount++;
 
@@ -57,7 +61,7 @@ namespace nardnob.InputTracker.WinForms.Views
                         UpdateFormValues();
                     }
 
-                    Console.WriteLine($"Clicked point: ({mousePoint.X}, {mousePoint.Y})");
+                    Debug.WriteLine($"Clicked point: ({mousePoint.X}, {mousePoint.Y})");
 
                     if (_state.ClickedPoints.ContainsKey(mousePoint.X))
                     {
@@ -78,7 +82,7 @@ namespace nardnob.InputTracker.WinForms.Views
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error in OnMouseClicked.");
+                Debug.WriteLine("Error in OnMouseClicked.");
                 MessageBox.Show("An error has occurred in OnMouseClicked.");
             }
         }
@@ -118,10 +122,13 @@ namespace nardnob.InputTracker.WinForms.Views
             _mouseListener.Start();
         }
 
-        private void RepositionForm()
+        private void PositionForm()
         {
             Rectangle workingArea = Screen.GetWorkingArea(this);
-            this.Location = new Point(workingArea.Right - Size.Width, workingArea.Bottom - Size.Height);
+            var xPosition = workingArea.Right - Size.Width;
+            var yPosition = workingArea.Bottom - Size.Height;
+
+            this.Location = new Point(xPosition, yPosition);
         }
 
         #endregion
@@ -130,7 +137,7 @@ namespace nardnob.InputTracker.WinForms.Views
 
         private void MainView_Load(object sender, EventArgs e)
         {
-            RepositionForm();
+            PositionForm();
             InitializeKeyListener();
             InitializeMouseListener();
         }
