@@ -5,7 +5,11 @@ namespace nardnob.InputTracker.WindowsInteraction
 {
     public class KeyboardInterceptor
     {
+        #region " Public Members "
+
         public event EventHandler<KeyboardInterceptorEventArgs>? KeyPressed;
+
+        #endregion
 
         #region " Private Members "
 

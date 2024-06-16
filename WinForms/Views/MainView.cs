@@ -87,21 +87,6 @@ namespace nardnob.InputTracker.WinForms.Views
             GrabWindow();
         }
 
-        private void lblKeyCountDescription_MouseDown(object sender, MouseEventArgs e)
-        {
-            GrabWindow();
-        }
-
-        private void lblKeyCount_MouseDown(object sender, MouseEventArgs e)
-        {
-            GrabWindow();
-        }
-
-        private void lblToggleVisibilityDescription_MouseDown(object sender, MouseEventArgs e)
-        {
-            GrabWindow();
-        }
-
         #endregion
     }
 }

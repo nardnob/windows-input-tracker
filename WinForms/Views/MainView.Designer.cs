@@ -41,7 +41,7 @@
             lblKeyCount.Size = new Size(13, 15);
             lblKeyCount.TabIndex = 0;
             lblKeyCount.Text = "0";
-            lblKeyCount.MouseDown += lblKeyCount_MouseDown;
+            lblKeyCount.MouseDown += MainView_MouseDown;
             // 
             // lblKeyCountDescription
             // 
@@ -51,7 +51,7 @@
             lblKeyCountDescription.Size = new Size(65, 15);
             lblKeyCountDescription.TabIndex = 1;
             lblKeyCountDescription.Text = "Key Count:";
-            lblKeyCountDescription.MouseDown += lblKeyCountDescription_MouseDown;
+            lblKeyCountDescription.MouseDown += MainView_MouseDown;
             // 
             // lblToggleVisibilityDescription
             // 
@@ -61,7 +61,7 @@
             lblToggleVisibilityDescription.Size = new Size(326, 15);
             lblToggleVisibilityDescription.TabIndex = 2;
             lblToggleVisibilityDescription.Text = "(ALT+1) - Hold ALT and press 1 to toggle the form's visibility.";
-            lblToggleVisibilityDescription.MouseDown += lblToggleVisibilityDescription_MouseDown;
+            lblToggleVisibilityDescription.MouseDown += MainView_MouseDown;
             // 
             // MainView
             // 
