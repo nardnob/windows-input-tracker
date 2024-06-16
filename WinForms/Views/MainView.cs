@@ -23,6 +23,11 @@ namespace nardnob.InputTracker.WinForms.Views
 
         #region " Private Methods "
 
+        private void GrabWindow()
+        {
+            Grabber.Grab(this.Handle);
+        }
+
         private void OnKeyPressed(object sender, KeyboardInterceptorEventArgs e)
         {
             var keyPressed = e.KeyPressed;
@@ -74,17 +79,22 @@ namespace nardnob.InputTracker.WinForms.Views
 
         private void MainView_MouseDown(object sender, MouseEventArgs e)
         {
-            Grabber.Grab(this.Handle);
+            GrabWindow();
         }
 
         private void lblKeyCountDescription_MouseDown(object sender, MouseEventArgs e)
         {
-            Grabber.Grab(this.Handle);
+            GrabWindow();
         }
 
         private void lblKeyCount_MouseDown(object sender, MouseEventArgs e)
         {
-            Grabber.Grab(this.Handle);
+            GrabWindow();
+        }
+
+        private void lblToggleVisibilityDescription_MouseDown(object sender, MouseEventArgs e)
+        {
+            GrabWindow();
         }
 
         #endregion

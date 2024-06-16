@@ -30,6 +30,7 @@
         {
             lblKeyCount = new Label();
             lblKeyCountDescription = new Label();
+            lblToggleVisibilityDescription = new Label();
             SuspendLayout();
             // 
             // lblKeyCount
@@ -52,11 +53,22 @@
             lblKeyCountDescription.Text = "Key Count:";
             lblKeyCountDescription.MouseDown += lblKeyCountDescription_MouseDown;
             // 
+            // lblToggleVisibilityDescription
+            // 
+            lblToggleVisibilityDescription.AutoSize = true;
+            lblToggleVisibilityDescription.Location = new Point(462, 426);
+            lblToggleVisibilityDescription.Name = "lblToggleVisibilityDescription";
+            lblToggleVisibilityDescription.Size = new Size(326, 15);
+            lblToggleVisibilityDescription.TabIndex = 2;
+            lblToggleVisibilityDescription.Text = "(ALT+1) - Hold ALT and press 1 to toggle the form's visibility.";
+            lblToggleVisibilityDescription.MouseDown += lblToggleVisibilityDescription_MouseDown;
+            // 
             // MainView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(lblToggleVisibilityDescription);
             Controls.Add(lblKeyCountDescription);
             Controls.Add(lblKeyCount);
             FormBorderStyle = FormBorderStyle.FixedSingle;
@@ -74,5 +86,6 @@
 
         private Label lblKeyCount;
         private Label lblKeyCountDescription;
+        private Label lblToggleVisibilityDescription;
     }
 }
