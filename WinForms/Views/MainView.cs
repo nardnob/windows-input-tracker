@@ -1,4 +1,5 @@
 using nardnob.InputTracker.WindowsInteraction;
+using nardnob.InputTracker.WinForms.Models;
 
 namespace nardnob.InputTracker.WinForms.Views
 {
@@ -11,10 +12,14 @@ namespace nardnob.InputTracker.WinForms.Views
 
         #endregion
 
+        #region " Constructors "
+
         public MainView()
         {
             InitializeComponent();
         }
+
+        #endregion
 
         #region " Private Methods "
 
@@ -34,10 +39,6 @@ namespace nardnob.InputTracker.WinForms.Views
                 ToggleFormVisibility();
             }
         }
-
-        #endregion
-
-        #region " Private Methods "
 
         private void ToggleFormVisibility()
         {
