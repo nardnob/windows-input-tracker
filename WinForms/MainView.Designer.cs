@@ -37,6 +37,7 @@
             ClientSize = new Size(800, 450);
             Name = "MainView";
             Text = "Windows Input Tracker";
+            MouseDown += MainView_MouseDown;
             ResumeLayout(false);
         }
 

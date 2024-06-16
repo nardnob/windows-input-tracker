@@ -1,3 +1,5 @@
+using nardnob.InputTracker.WindowGrabber;
+
 namespace nardnob.InputTracker.WinForms
 {
     public partial class MainView : Form
@@ -5,6 +7,11 @@ namespace nardnob.InputTracker.WinForms
         public MainView()
         {
             InitializeComponent();
+        }
+
+        private void MainView_MouseDown(object sender, MouseEventArgs e)
+        {
+            Grabber.Grab(this.Handle);
         }
     }
 }

@@ -9,4 +9,8 @@
     <StartupObject>nardnob.InputTracker.WinForms.Program</StartupObject>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WindowGrabber\nardnob.InputTracker.WindowGrabber.csproj" />
+  </ItemGroup>
+
 </Project>
