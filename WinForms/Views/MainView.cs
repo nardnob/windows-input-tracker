@@ -186,6 +186,16 @@ namespace nardnob.InputTracker.WinForms.Views
             btnSaveHeatmap.Text = "Save Heatmap";
         }
 
+        private string GetSaveHeatmapFileName()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Bitmap Image|*.bmp";
+            saveFileDialog.Title = "Save an Image File";
+            saveFileDialog.ShowDialog();
+
+            return saveFileDialog.FileName;
+        }
+
         #endregion
 
         #region " Event Handlers "
@@ -216,18 +226,14 @@ namespace nardnob.InputTracker.WinForms.Views
             }
 
             DisableControlsWhileSaving();
+            var fileName = GetSaveHeatmapFileName();
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Bitmap Image|*.bmp";
-            saveFileDialog.Title = "Save an Image File";
-            saveFileDialog.ShowDialog();
-
-            if (saveFileDialog.FileName != "")
+            if (fileName != "")
             {
-                Debug.WriteLine($"Saving bmp to: {saveFileDialog.FileName}");
+                Debug.WriteLine($"Saving bmp to: {fileName}");
 
                 await Task.Factory.StartNew(() => {
-                    SaveClicksHeatmap(saveFileDialog.FileName);
+                    SaveClicksHeatmap(fileName);
                 });
             }
             else
