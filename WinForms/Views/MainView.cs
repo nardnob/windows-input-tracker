@@ -44,7 +44,7 @@ namespace nardnob.InputTracker.WinForms.Views
                     ToggleFormVisibility();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debug.WriteLine("Error in OnKeyPressed.");
                 MessageBox.Show("An error has occurred in OnKeyPressed.", "Error Occurred");
@@ -68,7 +68,7 @@ namespace nardnob.InputTracker.WinForms.Views
                     StoreClickedPoint(mousePoint.X, mousePoint.Y, mouseMessage);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debug.WriteLine("Error in OnMouseClicked.");
                 MessageBox.Show("An error has occurred in OnMouseClicked.", "Error Occurred");
@@ -145,8 +145,6 @@ namespace nardnob.InputTracker.WinForms.Views
         {
             try
             {
-                const int ellipseWidth = 10;
-
                 if (_state.ClickedPoints.Count == 0)
                 {
                     this.UIThread(() =>
@@ -156,35 +154,10 @@ namespace nardnob.InputTracker.WinForms.Views
                     return;
                 }
 
-                var maxX = _state.ClickedPoints.Keys.Max(key => key.X);
-                var maxY = _state.ClickedPoints.Keys.Max(key => key.Y);
-
-                var bitmap = new Bitmap(maxX + ellipseWidth + 1, maxY + ellipseWidth + 1);
-
-                using (var graphics = Graphics.FromImage(bitmap))
-                {
-                    graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-
-                    foreach (var point in  _state.ClickedPoints.Keys) 
-                    {
-                        var rectangle = new Rectangle(point.X, point.Y, ellipseWidth, ellipseWidth);
-
-                        if (_state.ClickedPoints.ContainsKey(point))
-                        {
-                            var clickCount = _state.ClickedPoints[point];
-                            graphics.FillEllipse(GetBrushColorFromClickCount(clickCount), rectangle);
-                        }
-                    }
-                }
-
-                if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\images"))
-                { 
-                    Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\images");
-                }
-
-                bitmap.Save($"{Directory.GetCurrentDirectory()}\\images\\{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.bmp", ImageFormat.Bmp);
+                var bitmap = GenerateHeatmapBitmap();
+                SaveBitmapImage(bitmap);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 this.UIThread(() =>
                 {
@@ -200,6 +173,43 @@ namespace nardnob.InputTracker.WinForms.Views
                     btnSaveHeatmap.Text = "Save Heatmap";
                 });
             }
+        }
+
+        private Bitmap GenerateHeatmapBitmap()
+        {
+            var maxX = _state.ClickedPoints.Keys.Max(key => key.X);
+            var maxY = _state.ClickedPoints.Keys.Max(key => key.Y);
+            const int ellipseWidth = 10;
+
+            var bitmap = new Bitmap(maxX + ellipseWidth + 1, maxY + ellipseWidth + 1);
+
+            using (var graphics = Graphics.FromImage(bitmap))
+            {
+                graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
+
+                foreach (var point in _state.ClickedPoints.Keys)
+                {
+                    var rectangle = new Rectangle(point.X, point.Y, ellipseWidth, ellipseWidth);
+
+                    if (_state.ClickedPoints.ContainsKey(point))
+                    {
+                        var clickCount = _state.ClickedPoints[point];
+                        graphics.FillEllipse(GetBrushColorFromClickCount(clickCount), rectangle);
+                    }
+                }
+            }
+
+            return bitmap;
+        }
+
+        private void SaveBitmapImage(Bitmap bitmap)
+        {
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\images"))
+            {
+                Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\images");
+            }
+
+            bitmap.Save($"{Directory.GetCurrentDirectory()}\\images\\{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.bmp", ImageFormat.Bmp);
         }
 
         private System.Drawing.Brush GetBrushColorFromClickCount(int clickCount)
