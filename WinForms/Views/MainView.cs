@@ -47,7 +47,7 @@ namespace nardnob.InputTracker.WinForms.Views
             catch (Exception ex)
             {
                 Debug.WriteLine("Error in OnKeyPressed.");
-                MessageBox.Show("An error has occurred in OnKeyPressed.");
+                MessageBox.Show("An error has occurred in OnKeyPressed.", "Error Occurred");
             }
         }
 
@@ -71,7 +71,7 @@ namespace nardnob.InputTracker.WinForms.Views
             catch (Exception ex)
             {
                 Debug.WriteLine("Error in OnMouseClicked.");
-                MessageBox.Show("An error has occurred in OnMouseClicked.");
+                MessageBox.Show("An error has occurred in OnMouseClicked.", "Error Occurred");
             }
         }
 
@@ -147,41 +147,38 @@ namespace nardnob.InputTracker.WinForms.Views
             {
                 if (_state.ClickedPoints.Count == 0)
                 {
+                    this.UIThread(() =>
+                    {
+                        MessageBox.Show("There are no clicks to save as a heatmap.", "No Clicks");
+                    });
                     return;
                 }
 
                 var maxX = _state.ClickedPoints.Keys.Max(key => key.X);
                 var maxY = _state.ClickedPoints.Keys.Max(key => key.Y);
 
-                var bitmap = new Bitmap(maxX, maxY);
+                var bitmap = new Bitmap(maxX + 1, maxY + 1);
 
                 using (var graphics = Graphics.FromImage(bitmap))
                 {
-                    foreach (var point in _state.ClickedPoints.Keys)
+                    for (var x = 0; x <= maxX; x++)
                     {
-                        var rect = new System.Drawing.Rectangle(point.X, point.Y, 1, 1);
-                        var clickCount = _state.ClickedPoints[point];
-
-                        graphics.FillRectangle(System.Drawing.Brushes.Red, rect);
-                    }
-
-                    /*
-                    for (int x = 0; x < maxKeyX; x++)
-                    {
-                        for (int y = 0; y < maxKeyY; y++)
+                        for (var y = 0; y <= maxY; y++)
                         {
-                            var rect = new System.Drawing.Rectangle(x, y, 1, 1);
-                            if (_state.ClickedPoints.ContainsKey(x) && _state.ClickedPoints[x].ContainsKey(y))
-                            { 
-                                graphics.FillRectangle(GetColorFromClickCount(_state.ClickedPoints[x][y]), rect);
+                            var point = new Point(x, y);
+                            var rectangle = new Rectangle(point.X, point.Y, 1, 1);
+
+                            if (_state.ClickedPoints.ContainsKey(point))
+                            {
+                                var clickCount = _state.ClickedPoints[point];
+                                graphics.FillRectangle(GetBrushColorFromClickCount(clickCount), rectangle);
                             }
                             else
-                            { 
-                                graphics.FillRectangle(System.Drawing.Brushes.White, rect);
+                            {
+                                graphics.FillRectangle(Brushes.White, rectangle);
                             }
                         }
                     }
-                    */
                 }
 
                 if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\images"))
@@ -189,11 +186,14 @@ namespace nardnob.InputTracker.WinForms.Views
                     Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\images");
                 }
 
-                bitmap.Save(String.Format("{0}\\images\\{1}.jpg", Directory.GetCurrentDirectory(), DateTime.Now.ToString("yyyyMMddHHmmssfff")), ImageFormat.Bmp);
+                bitmap.Save($"{Directory.GetCurrentDirectory()}\\images\\{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.bmp", ImageFormat.Bmp);
             }
             catch (Exception ex)
             {
-
+                this.UIThread(() =>
+                {
+                    MessageBox.Show("An error occurred while saving the heatmap.", "Error Occurred");
+                });
             }
             finally
             {
@@ -204,6 +204,66 @@ namespace nardnob.InputTracker.WinForms.Views
                     btnSaveHeatmap.Text = "Save Heatmap";
                 });
             }
+        }
+
+        private System.Drawing.Brush GetBrushColorFromClickCount(int clickCount)
+        {
+            if (clickCount >= 128)
+            {
+                return System.Drawing.Brushes.OrangeRed;
+            }
+
+            if (clickCount >= 100)
+            {
+                return System.Drawing.Brushes.Red;
+            }
+
+            if (clickCount >= 86)
+            {
+                return System.Drawing.Brushes.Firebrick;
+            }
+
+            if (clickCount >= 64)
+            {
+                return System.Drawing.Brushes.DeepPink;
+            }
+
+            if (clickCount >= 48)
+            {
+                return System.Drawing.Brushes.Fuchsia;
+            }
+
+            if (clickCount >= 32)
+            {
+                return System.Drawing.Brushes.DarkViolet;
+            }
+
+            if (clickCount >= 16)
+            { 
+                return System.Drawing.Brushes.DarkMagenta;
+            }
+
+            if (clickCount >= 8)
+            { 
+                return System.Drawing.Brushes.DarkSlateBlue;
+            }
+
+            if (clickCount >= 4)
+            { 
+                return System.Drawing.Brushes.Blue;
+            }
+
+            if (clickCount >= 2)
+            { 
+                return System.Drawing.Brushes.CornflowerBlue;
+            }
+
+            if (clickCount >= 1)
+            { 
+                return System.Drawing.Brushes.SkyBlue;
+            }
+
+            return System.Drawing.Brushes.White;
         }
 
         #endregion
