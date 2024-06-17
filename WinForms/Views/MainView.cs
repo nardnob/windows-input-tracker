@@ -1,6 +1,8 @@
 using nardnob.InputTracker.WindowsInteraction;
 using nardnob.InputTracker.WinForms.Models;
+using nardnob.InputTracker.WinForms.Utilities;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 
 namespace nardnob.InputTracker.WinForms.Views
 {
@@ -80,13 +82,14 @@ namespace nardnob.InputTracker.WinForms.Views
             var theClickedButton = isLeftClick ? "Left" : "Right";
             Debug.WriteLine($"{theClickedButton}-clicked point: ({x}, {y})");
 
-            if (_state.ClickedPoints.ContainsKey(new Point(x, y)))
+            var clickedPoint = new Point(x, y);
+            if (_state.ClickedPoints.ContainsKey(clickedPoint))
             {
-                _state.ClickedPoints[new Point(x, y)]++;
+                _state.ClickedPoints[clickedPoint]++;
             }
             else
             {
-                _state.ClickedPoints.Add(new Point(x, y), 1);
+                _state.ClickedPoints.Add(clickedPoint, 1);
             }
         }
 
@@ -138,6 +141,71 @@ namespace nardnob.InputTracker.WinForms.Views
             this.Location = new Point(xPosition, yPosition);
         }
 
+        private void SaveClicksHeatmap()
+        {
+            try
+            {
+                if (_state.ClickedPoints.Count == 0)
+                {
+                    return;
+                }
+
+                var maxX = _state.ClickedPoints.Keys.Max(key => key.X);
+                var maxY = _state.ClickedPoints.Keys.Max(key => key.Y);
+
+                var bitmap = new Bitmap(maxX, maxY);
+
+                using (var graphics = Graphics.FromImage(bitmap))
+                {
+                    foreach (var point in _state.ClickedPoints.Keys)
+                    {
+                        var rect = new System.Drawing.Rectangle(point.X, point.Y, 1, 1);
+                        var clickCount = _state.ClickedPoints[point];
+
+                        graphics.FillRectangle(System.Drawing.Brushes.Red, rect);
+                    }
+
+                    /*
+                    for (int x = 0; x < maxKeyX; x++)
+                    {
+                        for (int y = 0; y < maxKeyY; y++)
+                        {
+                            var rect = new System.Drawing.Rectangle(x, y, 1, 1);
+                            if (_state.ClickedPoints.ContainsKey(x) && _state.ClickedPoints[x].ContainsKey(y))
+                            { 
+                                graphics.FillRectangle(GetColorFromClickCount(_state.ClickedPoints[x][y]), rect);
+                            }
+                            else
+                            { 
+                                graphics.FillRectangle(System.Drawing.Brushes.White, rect);
+                            }
+                        }
+                    }
+                    */
+                }
+
+                if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\images"))
+                { 
+                    Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\images");
+                }
+
+                bitmap.Save(String.Format("{0}\\images\\{1}.jpg", Directory.GetCurrentDirectory(), DateTime.Now.ToString("yyyyMMddHHmmssfff")), ImageFormat.Bmp);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                _state.IsLoading = false;
+                this.UIThread(() =>
+                {
+                    btnSaveHeatmap.Enabled = true;
+                    btnSaveHeatmap.Text = "Save Heatmap";
+                });
+            }
+        }
+
         #endregion
 
         #region " Event Handlers "
@@ -158,6 +226,19 @@ namespace nardnob.InputTracker.WinForms.Views
         private void MainView_MouseDown(object sender, MouseEventArgs e)
         {
             WindowGrabber.Grab(this.Handle);
+        }
+
+        private void btnSaveHeatmap_Click(object sender, EventArgs e)
+        {
+            if (_state.IsLoading)
+            {
+                return;
+            }
+
+            _state.IsLoading = true;
+            btnSaveHeatmap.Enabled = false;
+            btnSaveHeatmap.Text = "Saving...";
+            Task.Factory.StartNew(SaveClicksHeatmap);
         }
 
         #endregion

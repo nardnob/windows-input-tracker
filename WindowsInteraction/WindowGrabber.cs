@@ -4,11 +4,17 @@ namespace nardnob.InputTracker.WindowsInteraction
 {
     public static class WindowGrabber
     {
+        #region " DLL Imports "
+
         [DllImport("User32.dll")]
         private static extern bool ReleaseCapture();
 
         [DllImport("User32.dll")]
         private static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+        #endregion
+
+        #region " Public Methods "
 
         /// <summary>
         /// Calling this method "grips" the window while the mouse button is held.
@@ -24,5 +30,7 @@ namespace nardnob.InputTracker.WindowsInteraction
             ReleaseCapture();
             SendMessage(windowHandle, buttonDownMessage, titleBar, 0);
         }
+
+        #endregion
     }
 }

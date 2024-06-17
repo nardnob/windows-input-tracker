@@ -34,6 +34,7 @@
             lblToggleVisibilityDescription = new Label();
             lblClickCountDescription = new Label();
             lblClickCount = new Label();
+            btnSaveHeatmap = new Button();
             SuspendLayout();
             // 
             // lblKeyCount
@@ -87,11 +88,22 @@
             lblClickCount.Text = "0";
             lblClickCount.MouseDown += MainView_MouseDown;
             // 
+            // btnSaveHeatmap
+            // 
+            btnSaveHeatmap.Location = new Point(250, 12);
+            btnSaveHeatmap.Name = "btnSaveHeatmap";
+            btnSaveHeatmap.Size = new Size(104, 23);
+            btnSaveHeatmap.TabIndex = 5;
+            btnSaveHeatmap.Text = "Save Heatmap";
+            btnSaveHeatmap.UseVisualStyleBackColor = true;
+            btnSaveHeatmap.Click += btnSaveHeatmap_Click;
+            // 
             // MainView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(366, 89);
+            Controls.Add(btnSaveHeatmap);
             Controls.Add(lblClickCount);
             Controls.Add(lblClickCountDescription);
             Controls.Add(lblToggleVisibilityDescription);
@@ -117,5 +129,6 @@
         private Label lblToggleVisibilityDescription;
         private Label lblClickCountDescription;
         private Label lblClickCount;
+        private Button btnSaveHeatmap;
     }
 }
