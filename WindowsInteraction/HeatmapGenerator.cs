@@ -34,14 +34,9 @@ namespace nardnob.InputTracker.WindowsInteraction
             return bitmap;
         }
 
-        public static void SaveBitmapImage(Bitmap bitmap)
+        public static void SaveBitmapImage(Bitmap bitmap, string fileName)
         {
-            if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\images"))
-            {
-                Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\images");
-            }
-
-            bitmap.Save($"{Directory.GetCurrentDirectory()}\\images\\{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.bmp", ImageFormat.Bmp);
+            bitmap.Save(fileName, ImageFormat.Bmp);
         }
 
         #endregion

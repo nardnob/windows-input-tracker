@@ -140,7 +140,7 @@ namespace nardnob.InputTracker.WinForms.Views
             this.Location = new Point(xPosition, yPosition);
         }
 
-        private void SaveClicksHeatmap()
+        private void SaveClicksHeatmap(string fileName)
         {
             try
             {
@@ -154,7 +154,7 @@ namespace nardnob.InputTracker.WinForms.Views
                 }
 
                 var bitmap = HeatmapGenerator.GenerateHeatmapBitmap(_state.ClickedPoints);
-                HeatmapGenerator.SaveBitmapImage(bitmap);
+                HeatmapGenerator.SaveBitmapImage(bitmap, fileName);
             }
             catch (Exception)
             {
@@ -196,17 +196,29 @@ namespace nardnob.InputTracker.WinForms.Views
             WindowGrabber.Grab(this.Handle);
         }
 
-        private void btnSaveHeatmap_Click(object sender, EventArgs e)
+        private async void btnSaveHeatmap_Click(object sender, EventArgs e)
         {
             if (_state.IsLoading)
             {
                 return;
             }
 
-            _state.IsLoading = true;
-            btnSaveHeatmap.Enabled = false;
-            btnSaveHeatmap.Text = "Saving...";
-            Task.Factory.StartNew(SaveClicksHeatmap);
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Bitmap Image|*.bmp";
+            saveFileDialog.Title = "Save an Image File";
+            saveFileDialog.ShowDialog();
+
+            if (saveFileDialog.FileName != "")
+            {
+                _state.IsLoading = true;
+                btnSaveHeatmap.Enabled = false;
+                btnSaveHeatmap.Text = "Saving...";
+
+                Debug.WriteLine($"Saving bmp to: {saveFileDialog.FileName}");
+                await Task.Factory.StartNew(() => {
+                    SaveClicksHeatmap(saveFileDialog.FileName);
+                });
+            }
         }
 
         #endregion
