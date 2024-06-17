@@ -2,7 +2,6 @@ using nardnob.InputTracker.WindowsInteraction;
 using nardnob.InputTracker.WinForms.Models;
 using nardnob.InputTracker.WinForms.Utilities;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 
 namespace nardnob.InputTracker.WinForms.Views
 {
@@ -154,8 +153,8 @@ namespace nardnob.InputTracker.WinForms.Views
                     return;
                 }
 
-                var bitmap = GenerateHeatmapBitmap();
-                SaveBitmapImage(bitmap);
+                var bitmap = HeatmapGenerator.GenerateHeatmapBitmap(_state.ClickedPoints);
+                HeatmapGenerator.SaveBitmapImage(bitmap);
             }
             catch (Exception)
             {
@@ -173,103 +172,6 @@ namespace nardnob.InputTracker.WinForms.Views
                     btnSaveHeatmap.Text = "Save Heatmap";
                 });
             }
-        }
-
-        private Bitmap GenerateHeatmapBitmap()
-        {
-            var maxX = _state.ClickedPoints.Keys.Max(key => key.X);
-            var maxY = _state.ClickedPoints.Keys.Max(key => key.Y);
-            const int ellipseWidth = 10;
-
-            var bitmap = new Bitmap(maxX + ellipseWidth + 1, maxY + ellipseWidth + 1);
-
-            using (var graphics = Graphics.FromImage(bitmap))
-            {
-                graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
-
-                foreach (var point in _state.ClickedPoints.Keys)
-                {
-                    var rectangle = new Rectangle(point.X, point.Y, ellipseWidth, ellipseWidth);
-
-                    if (_state.ClickedPoints.ContainsKey(point))
-                    {
-                        var clickCount = _state.ClickedPoints[point];
-                        graphics.FillEllipse(GetBrushColorFromClickCount(clickCount), rectangle);
-                    }
-                }
-            }
-
-            return bitmap;
-        }
-
-        private void SaveBitmapImage(Bitmap bitmap)
-        {
-            if (!Directory.Exists(Directory.GetCurrentDirectory() + "\\images"))
-            {
-                Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\images");
-            }
-
-            bitmap.Save($"{Directory.GetCurrentDirectory()}\\images\\{DateTime.Now.ToString("yyyyMMddHHmmssfff")}.bmp", ImageFormat.Bmp);
-        }
-
-        private System.Drawing.Brush GetBrushColorFromClickCount(int clickCount)
-        {
-            if (clickCount >= 128)
-            {
-                return System.Drawing.Brushes.OrangeRed;
-            }
-
-            if (clickCount >= 100)
-            {
-                return System.Drawing.Brushes.Red;
-            }
-
-            if (clickCount >= 86)
-            {
-                return System.Drawing.Brushes.Firebrick;
-            }
-
-            if (clickCount >= 64)
-            {
-                return System.Drawing.Brushes.DeepPink;
-            }
-
-            if (clickCount >= 48)
-            {
-                return System.Drawing.Brushes.Fuchsia;
-            }
-
-            if (clickCount >= 32)
-            {
-                return System.Drawing.Brushes.DarkViolet;
-            }
-
-            if (clickCount >= 16)
-            { 
-                return System.Drawing.Brushes.DarkMagenta;
-            }
-
-            if (clickCount >= 8)
-            { 
-                return System.Drawing.Brushes.DarkSlateBlue;
-            }
-
-            if (clickCount >= 4)
-            { 
-                return System.Drawing.Brushes.Blue;
-            }
-
-            if (clickCount >= 2)
-            { 
-                return System.Drawing.Brushes.CornflowerBlue;
-            }
-
-            if (clickCount >= 1)
-            { 
-                return System.Drawing.Brushes.SkyBlue;
-            }
-
-            return System.Drawing.Brushes.White;
         }
 
         #endregion
