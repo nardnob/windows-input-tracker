@@ -1,5 +1,6 @@
 using nardnob.InputTracker.WindowsInteraction;
 using nardnob.InputTracker.WinForms.Models;
+using nardnob.InputTracker.WinForms.Utilities;
 using System.Diagnostics;
 
 namespace nardnob.InputTracker.WinForms.Views
@@ -42,10 +43,10 @@ namespace nardnob.InputTracker.WinForms.Views
                     ToggleFormVisibility();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debug.WriteLine("Error in OnKeyPressed.");
-                MessageBox.Show("An error has occurred in OnKeyPressed.");
+                MessageBox.Show("An error has occurred in OnKeyPressed.", "Error Occurred");
             }
         }
 
@@ -66,10 +67,10 @@ namespace nardnob.InputTracker.WinForms.Views
                     StoreClickedPoint(mousePoint.X, mousePoint.Y, mouseMessage);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Debug.WriteLine("Error in OnMouseClicked.");
-                MessageBox.Show("An error has occurred in OnMouseClicked.");
+                MessageBox.Show("An error has occurred in OnMouseClicked.", "Error Occurred");
             }
         }
 
@@ -80,13 +81,14 @@ namespace nardnob.InputTracker.WinForms.Views
             var theClickedButton = isLeftClick ? "Left" : "Right";
             Debug.WriteLine($"{theClickedButton}-clicked point: ({x}, {y})");
 
-            if (_state.ClickedPoints.ContainsKey(new Point(x, y)))
+            var clickedPoint = new Point(x, y);
+            if (_state.ClickedPoints.ContainsKey(clickedPoint))
             {
-                _state.ClickedPoints[new Point(x, y)]++;
+                _state.ClickedPoints[clickedPoint]++;
             }
             else
             {
-                _state.ClickedPoints.Add(new Point(x, y), 1);
+                _state.ClickedPoints.Add(clickedPoint, 1);
             }
         }
 
@@ -138,6 +140,62 @@ namespace nardnob.InputTracker.WinForms.Views
             this.Location = new Point(xPosition, yPosition);
         }
 
+        private void SaveClicksHeatmap(string fileName)
+        {
+            try
+            {
+                if (_state.ClickedPoints.Count == 0)
+                {
+                    this.UIThread(() =>
+                    {
+                        MessageBox.Show("There are no clicks to save as a heatmap.", "No Clicks");
+                    });
+                    return;
+                }
+
+                var bitmap = HeatmapGenerator.GenerateHeatmapBitmap(_state.ClickedPoints);
+                HeatmapGenerator.SaveBitmapImage(bitmap, fileName);
+            }
+            catch (Exception)
+            {
+                this.UIThread(() =>
+                {
+                    MessageBox.Show("An error occurred while saving the heatmap.", "Error Occurred");
+                });
+            }
+            finally
+            {
+                this.UIThread(() =>
+                {
+                    EnableControlsAfterSaving();
+                });
+            }
+        }
+
+        private void DisableControlsWhileSaving()
+        {
+            _state.IsLoading = true;
+            btnSaveHeatmap.Enabled = false;
+            btnSaveHeatmap.Text = "Saving...";
+        }
+
+        private void EnableControlsAfterSaving()
+        {
+            _state.IsLoading = false;
+            btnSaveHeatmap.Enabled = true;
+            btnSaveHeatmap.Text = "Save Heatmap";
+        }
+
+        private string GetSaveHeatmapFileName()
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Bitmap Image|*.bmp";
+            saveFileDialog.Title = "Save an Image File";
+            saveFileDialog.ShowDialog();
+
+            return saveFileDialog.FileName;
+        }
+
         #endregion
 
         #region " Event Handlers "
@@ -158,6 +216,30 @@ namespace nardnob.InputTracker.WinForms.Views
         private void MainView_MouseDown(object sender, MouseEventArgs e)
         {
             WindowGrabber.Grab(this.Handle);
+        }
+
+        private async void btnSaveHeatmap_Click(object sender, EventArgs e)
+        {
+            if (_state.IsLoading)
+            {
+                return;
+            }
+
+            DisableControlsWhileSaving();
+            var fileName = GetSaveHeatmapFileName();
+
+            if (fileName != "")
+            {
+                Debug.WriteLine($"Saving bmp to: {fileName}");
+
+                await Task.Factory.StartNew(() => {
+                    SaveClicksHeatmap(fileName);
+                });
+            }
+            else
+            {
+                EnableControlsAfterSaving();
+            }
         }
 
         #endregion
