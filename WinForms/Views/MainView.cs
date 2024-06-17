@@ -145,6 +145,8 @@ namespace nardnob.InputTracker.WinForms.Views
         {
             try
             {
+                const int ellipseWidth = 10;
+
                 if (_state.ClickedPoints.Count == 0)
                 {
                     this.UIThread(() =>
@@ -157,26 +159,20 @@ namespace nardnob.InputTracker.WinForms.Views
                 var maxX = _state.ClickedPoints.Keys.Max(key => key.X);
                 var maxY = _state.ClickedPoints.Keys.Max(key => key.Y);
 
-                var bitmap = new Bitmap(maxX + 1, maxY + 1);
+                var bitmap = new Bitmap(maxX + ellipseWidth + 1, maxY + ellipseWidth + 1);
 
                 using (var graphics = Graphics.FromImage(bitmap))
                 {
-                    for (var x = 0; x <= maxX; x++)
-                    {
-                        for (var y = 0; y <= maxY; y++)
-                        {
-                            var point = new Point(x, y);
-                            var rectangle = new Rectangle(point.X, point.Y, 1, 1);
+                    graphics.FillRectangle(Brushes.White, new Rectangle(0, 0, bitmap.Width, bitmap.Height));
 
-                            if (_state.ClickedPoints.ContainsKey(point))
-                            {
-                                var clickCount = _state.ClickedPoints[point];
-                                graphics.FillRectangle(GetBrushColorFromClickCount(clickCount), rectangle);
-                            }
-                            else
-                            {
-                                graphics.FillRectangle(Brushes.White, rectangle);
-                            }
+                    foreach (var point in  _state.ClickedPoints.Keys) 
+                    {
+                        var rectangle = new Rectangle(point.X, point.Y, ellipseWidth, ellipseWidth);
+
+                        if (_state.ClickedPoints.ContainsKey(point))
+                        {
+                            var clickCount = _state.ClickedPoints[point];
+                            graphics.FillEllipse(GetBrushColorFromClickCount(clickCount), rectangle);
                         }
                     }
                 }
@@ -197,9 +193,9 @@ namespace nardnob.InputTracker.WinForms.Views
             }
             finally
             {
-                _state.IsLoading = false;
                 this.UIThread(() =>
                 {
+                    _state.IsLoading = false;
                     btnSaveHeatmap.Enabled = true;
                     btnSaveHeatmap.Text = "Save Heatmap";
                 });
