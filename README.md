@@ -1,4 +1,4 @@
 # windows-input-tracker
-Windows input tracker in .NET 8, C# 12. Utilizes WinForms.
+Windows input tracker in .NET 8, C# 12, and WinForms.
 
-![image](https://github.com/nardnob/windows-input-tracker/assets/26029755/b720a7af-c058-4552-ab48-8546e2369344)
+![image](https://github.com/nardnob/windows-input-tracker/assets/26029755/a2763ef9-ebac-4ed6-b3a2-ef1b5ea12727)
