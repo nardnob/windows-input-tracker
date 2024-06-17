@@ -167,11 +167,23 @@ namespace nardnob.InputTracker.WinForms.Views
             {
                 this.UIThread(() =>
                 {
-                    _state.IsLoading = false;
-                    btnSaveHeatmap.Enabled = true;
-                    btnSaveHeatmap.Text = "Save Heatmap";
+                    EnableControlsAfterSaving();
                 });
             }
+        }
+
+        private void DisableControlsWhileSaving()
+        {
+            _state.IsLoading = true;
+            btnSaveHeatmap.Enabled = false;
+            btnSaveHeatmap.Text = "Saving...";
+        }
+
+        private void EnableControlsAfterSaving()
+        {
+            _state.IsLoading = false;
+            btnSaveHeatmap.Enabled = true;
+            btnSaveHeatmap.Text = "Save Heatmap";
         }
 
         #endregion
@@ -203,6 +215,8 @@ namespace nardnob.InputTracker.WinForms.Views
                 return;
             }
 
+            DisableControlsWhileSaving();
+
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "Bitmap Image|*.bmp";
             saveFileDialog.Title = "Save an Image File";
@@ -210,14 +224,15 @@ namespace nardnob.InputTracker.WinForms.Views
 
             if (saveFileDialog.FileName != "")
             {
-                _state.IsLoading = true;
-                btnSaveHeatmap.Enabled = false;
-                btnSaveHeatmap.Text = "Saving...";
-
                 Debug.WriteLine($"Saving bmp to: {saveFileDialog.FileName}");
+
                 await Task.Factory.StartNew(() => {
                     SaveClicksHeatmap(saveFileDialog.FileName);
                 });
+            }
+            else
+            {
+                EnableControlsAfterSaving();
             }
         }
 
